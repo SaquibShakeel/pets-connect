@@ -120,7 +120,7 @@ const EditPet = () => {
         <h2 className="mt-2 self-start text-xl">Last Location</h2>
         <div className="flex md:flex-row flex-col items-center justify-between w-full">
           <div>Integrate Google map here</div>
-          <ShowQRCode url={`http://localhost:3001/api/pets/${selectId}`} />
+          <ShowQRCode url={`https://pets-connect-pink.vercel.app/api/pets/${selectId}`} />
         </div>
       </div>
       <div className="w-full flex items-center justify-center mt-5">
