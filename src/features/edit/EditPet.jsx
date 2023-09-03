@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import profile from "../../assets/profile.jpeg";
 import ShowQRCode from "../../utils/ShowQRCode";
+import {storage} from "../../utils/firebase";
+import {ref, uploadBytes, getDownloadURL} from "firebase/storage";
 
 const EditPet = () => {
   const [pet, setPet] = useState(null);
@@ -43,19 +45,25 @@ const EditPet = () => {
   const imageChangeHandler = async () => {
     try {
       if (!imageInput) return pet.image;
-      const formData = {
-        image: imageInput,
-      };
-      const getImageUrl = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/imageUrl`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      return getImageUrl.data.url;
+
+      const storageRef = ref(storage, `images/${imageInput.name + Date.now()}`);
+      await uploadBytes(storageRef, imageInput);
+      const url = await getDownloadURL(storageRef);
+      return url;
+
+      // const formData = {
+      //   image: imageInput,
+      // };
+      // const getImageUrl = await axios.post(
+      //   `${import.meta.env.VITE_BASE_URL}/api/imageUrl`,
+      //   formData,
+      //   {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data",
+      //     },
+      //   }
+      // );
+      // return getImageUrl.data.url;
     } catch (error) {
       console.log({ error });
     }
