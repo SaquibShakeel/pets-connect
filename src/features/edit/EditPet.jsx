@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import profile from "../../assets/profile.jpeg";
 import ShowQRCode from "../../utils/ShowQRCode";
-import {storage} from "../../utils/firebase";
-import {ref, uploadBytes, getDownloadURL} from "firebase/storage";
+import { storage } from "../../utils/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const EditPet = () => {
   const [pet, setPet] = useState(null);
@@ -36,11 +36,11 @@ const EditPet = () => {
       alert(editPet?.data?.message);
     } catch (error) {
       console.log(error);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
+  console.log("🚀 ~ file: EditPet.jsx:45 ~ EditPet ~ pet:", pet);
 
   const imageChangeHandler = async () => {
     try {
@@ -119,8 +119,21 @@ const EditPet = () => {
         </div>
         <h2 className="mt-2 self-start text-xl">Last Location</h2>
         <div className="flex md:flex-row flex-col items-center justify-between w-full">
-          <div>Integrate Google map here</div>
-          <ShowQRCode url={`https://pets-connect-pink.vercel.app/api/pets/${selectId}`} />
+
+          {pet?.lastLocation?.lat != undefined && (
+            <div className="w-3/4 m-4 h-72" >
+
+            <iframe
+            width={'100%'}
+            height={'100%'}
+              src={`https://maps.google.com/maps?q=${pet.lastLocation.lat},${pet.lastLocation.lng},&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+            />
+            </div>
+          )}
+
+          <ShowQRCode
+            url={`https://pets-connect-pink.vercel.app/api/pets/${selectId}`}
+          />
         </div>
       </div>
       <div className="w-full flex items-center justify-center mt-5">

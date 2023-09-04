@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-import {BiRefresh} from 'react-icons/bi'
+import { BiRefresh, BiLogoWhatsapp, BiLogoGmail } from "react-icons/bi";
 
 const PetById = () => {
   const [pet, setPet] = useState(null);
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState("");
   const time = new Date().toString();
 
   const path = window.location.pathname.split("/");
@@ -25,6 +25,7 @@ const PetById = () => {
     const date = new Date(time);
     return date.toLocaleString();
   };
+  console.log(pet)
 
   const updateTime = () => {
     axios
@@ -38,7 +39,7 @@ const PetById = () => {
           ...prev,
           lastSeen: res.data.lastSeen,
           lastLocation: res.data.lastLocation,
-      }));
+        }));
       })
       .catch((err) => console.log(err));
   };
@@ -53,11 +54,12 @@ const PetById = () => {
       .catch((err) => console.log(err));
   }, [location]);
 
-  if(!pet) return (
-    <div className="flex items-center justify-center w-full h-screen">
-      <h1 className="text-3xl font-bold">Loading...</h1>
-    </div>
-  )
+  if (!pet)
+    return (
+      <div className="flex items-center justify-center w-full h-screen">
+        <h1 className="text-3xl font-bold">Loading...</h1>
+      </div>
+    );
 
   return (
     <div className="flex items-start justify-start w-screen min-h-[80vh] sm:px-12 px-4 py-5 md:flex-row flex-col">
@@ -69,16 +71,39 @@ const PetById = () => {
         <p>{pet?.owner?.name}</p>
         <div className="flex items-center justify-start sm:mt-0 mt-2">
           <p className="text-xs">Last seen: {formatTime(pet?.lastSeen)}</p>
-          <button onClick={updateTime} className="text-white bg-transparent border-none rounded-lg px-2 py-1 group outline-none focus:outline-none">
+          <button
+            onClick={updateTime}
+            className="text-white bg-transparent border-none rounded-lg px-2 py-1 group outline-none focus:outline-none"
+          >
             <BiRefresh className="m-1 group-hover:rotate-180 transition ease-in-out border-none focus:border-none" />
           </button>
         </div>
         <h2 className="mt-4 self-start text-xl">Contact Owner</h2>
         <div className="flex sm:items-center items-start justify-between w-full sm:flex-row flex-col">
-        <p>Email: {pet?.owner?.email}</p>
-        <p>Contact: {pet?.owner?.contact}</p>
+          <a href={`mailto:${pet?.owner?.email}`}>Email: {pet?.owner?.email}</a>
+          <a href={`tel:${pet?.owner?.contact}`}>
+            Contact: {pet?.owner?.contact}
+          </a>
         </div>
-        <button className="p-2 bg-teal-600 hover:bg-teal-700 text-white mt-4 self-end border-none outline-none focus:outline-none" onClick={getLocation} >Update Location</button>
+        <div className="flex justify-between items-center w-full p-2 mt-2">
+          <div className="flex gap-2 ">
+            <a className="text-2xl" href={`https://wa.me/${pet?.owner?.contact}?text=I%20wanted%20to%20talk%20about%20your%20pet%20${pet?.name}. `}>
+              <BiLogoWhatsapp />
+            </a>
+
+
+            <a className="text-2xl" href={`mailto:${pet?.owner?.email}?subject="I wanted to talk about your pet ${pet?.name}"`}>
+              <BiLogoGmail />
+            </a>
+          </div>
+
+          <button
+            className="p-2 bg-teal-600 hover:bg-teal-700 text-white self-end border-none outline-none focus:outline-none"
+            onClick={getLocation}
+          >
+            Update Location
+          </button>
+        </div>
       </div>
     </div>
   );
